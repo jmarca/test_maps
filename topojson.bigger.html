@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<title>Testing out D3 topojson</title>
+<style>
+
+path {
+  fill: #ccc;
+  stroke: #fff;
+  stroke-width: .5px;
+}
+
+path:hover {
+  fill: red;
+}
+
+path {
+  fill: #00f;
+  fill-opacity: .2;
+  stroke: #f00;
+  stroke-width: 1.5px;
+}
+
+path:hover {
+  fill: brown;
+  fill-opacity: .7;
+}
+
+</style>
+
+<body>
+
+<h1>testing stuff out D3 + Leaflet</h1>
+
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+
+<script>
+
+var width = 8000,
+    height = 9000;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+d3.json("topology4326.json", function(error, topology) {
+
+    var grids = topology.objects.grids;
+    var gridf = topojson.feature(topology, grids)
+    var bbox =  topology.bbox
+    var centerx = bbox[0] + (bbox[2] - bbox[0])/2
+    var centery = bbox[1] + (bbox[3] - bbox[1])/2
+
+    var projection = d3.geo.mercator()
+                     .center([centerx,centery])
+                     //.rotate([4.4, 0])
+                     .scale(40000)
+                     .translate([width/2, height / 2]);
+
+    var path = d3.geo.path()
+               .projection(projection);
+    svg.selectAll("path")
+    .data(gridf.features)
+    .enter().append("path")
+    .attr("d", path);
+
+});
+</script>
+</body>
+</html>
