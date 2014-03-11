@@ -1,0 +1,16 @@
+{
+  "name": "test_maps",
+  "version": "0.0.0",
+  "description": "Testing maps and d3 and topojson",
+  "main": "plotter.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "James E. Marca",
+  "license": "WTFYW",
+  "dependencies": {
+    "xmldom": "^0.1.19",
+    "topojson": "^1.4.9",
+    "d3": "^3.4.3"
+  }
+}
