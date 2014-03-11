@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Mapbox and topojson</title>
+
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+  <style>
+    @import url(https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.css);
+
+path.myStyle {
+  fill: #555;
+  fill-opacity: .05;
+  stroke: #fff;
+  stroke-width: 1.2px;
+  stroke-opacity: .2
+}
+
+path.myStyle:hover {
+  fill: brown;
+  fill-opacity: .3;
+}
+
+  </style>
+</head>
+<body>
+  <div id="map" style="width: 960px; height: 600px"></div>
+  <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+  <script>
+  var map = L.mapbox.map('map').setView([ 38.1254226603777, -121.5006950802305], 13);
+  var data_attrib = " | Data: <a href='http://www.geodatenzentrum.de/geodaten/gdz_rahmen.gdz_div?gdz_spr=eng&gdz_akt_zeile=5&gdz_anz_zeile=1&gdz_unt_zeile=18&gdz_user_id=0' target='_blank'>&copy; GeoBasis-DE / BKG 2013</a> | <a href='http://d3js.org/'>D3.js</a> | <a href='https://github.com/mbostock/topojson/wiki'>TopoJSON</a>"
+  var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: "Map: <a href='http://www.openstreetmap.org/'>&copy; OpenStreetMap </a>contributors" + data_attrib}).addTo(map);
+  var baseLayers = {
+      "OpenStreetMap":osm
+  };
+  L.control.layers(baseLayers).addTo(map);
+
+function projectPoint(x, y) {
+  var point = map.latLngToLayerPoint(new L.mapbox.LatLng(y, x));
+  this.stream.point(point.x, point.y);
+}
+
+var transform = d3.geo.transform({point: projectPoint})
+var path = d3.geo.path().projection(transform)
+var width = 960
+var height = 600
+
+function styleit(feature) {
+        return {
+          'className': 'myStyle'
+        };
+}
+
+  var gridJson;
+  // smaller.topology.json
+  d3.json("topology4326.json", function(error, topology) {
+    var grids = topology.objects.grids;
+    var gridf = topojson.feature(topology, grids);
+    var bbox =  topology.bbox;
+
+    gridJSON = L.geoJson(gridf.features,{
+           style: styleit
+    })
+    map.addLayer(gridJSON)
+
+  })
+
+  var zoomHandler = function(){
+     var layeron = true
+     return function(e,target){
+        var zoom = map.getZoom()
+        if (zoom<12 && layeron){
+            layeron = false
+            map.removeLayer(gridJSON)
+        }else{
+          if(zoom>11 && ! layeron){
+            layeron = true
+            map.addLayer(gridJSON)
+          }
+        }
+     };
+  }();
+
+  map.on('zoomend',zoomHandler);
+
+
+  </script>
+ </body>
+</html>
