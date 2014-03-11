@@ -30,8 +30,11 @@ path.myStyle:hover {
   var map = L.map('map').setView([ 38.1254226603777, -121.5006950802305], 11);
   var data_attrib = " | Data: <a href='http://www.geodatenzentrum.de/geodaten/gdz_rahmen.gdz_div?gdz_spr=eng&gdz_akt_zeile=5&gdz_anz_zeile=1&gdz_unt_zeile=18&gdz_user_id=0' target='_blank'>&copy; GeoBasis-DE / BKG 2013</a> | <a href='http://d3js.org/'>D3.js</a> | <a href='https://github.com/mbostock/topojson/wiki'>TopoJSON</a>"
   var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: "Map: <a href='http://www.openstreetmap.org/'>&copy; OpenStreetMap </a>contributors" + data_attrib});
-  var stamen = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {attribution: "Map: <a href='http://maps.stamen.com/#toner/12/37.7706/-122.3782'>Stamen Design</a>" + data_attrib}).addTo(map);
-  var baseLayers = {"Stamen":stamen,"OpenStreetMap":osm};
+  //  var stamen = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {attribution: "Map: <a href='http://maps.stamen.com/#toner/12/37.7706/-122.3782'>Stamen Design</a>" + data_attrib}).addTo(map);
+  var baseLayers = {
+      // "Stamen":stamen,
+      "OpenStreetMap":osm
+  };
   L.control.layers(baseLayers).addTo(map);
 
 function projectPoint(x, y) {
