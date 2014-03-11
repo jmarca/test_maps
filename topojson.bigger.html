@@ -5,16 +5,6 @@
 <style>
 
 path {
-  fill: #ccc;
-  stroke: #fff;
-  stroke-width: .5px;
-}
-
-path:hover {
-  fill: red;
-}
-
-path {
   fill: #00f;
   fill-opacity: .2;
   stroke: #f00;
@@ -38,14 +28,14 @@ path:hover {
 
 <script>
 
-var width = 5000,
-    height = 10000;
+var width = 8000,
+    height = 9000;
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-d3.json("smaller.topology.json", function(error, topology) {
+d3.json("topology4326.json", function(error, topology) {
 
     var grids = topology.objects.grids;
     var gridf = topojson.feature(topology, grids)
@@ -56,7 +46,7 @@ d3.json("smaller.topology.json", function(error, topology) {
     var projection = d3.geo.mercator()
                      .center([centerx,centery])
                      //.rotate([4.4, 0])
-                     .scale(200000)
+                     .scale(40000)
                      .translate([width/2, height / 2]);
 
     var path = d3.geo.path()
