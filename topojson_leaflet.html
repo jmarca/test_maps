@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Testing Simple Tiling</title>
+  <meta charset="utf-8" />
+  <style>
+  @import url(http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css);
+
+path.myStyle {
+  fill: #555;
+  fill-opacity: .05;
+  stroke: #fff;
+  stroke-width: 1.2px;
+  stroke-opacity: .2
+}
+
+path.myStyle:hover {
+  fill: brown;
+  fill-opacity: .3;
+}
+
+  </style>
+</head>
+<body>
+  <div id="map" style="width: 960px; height: 600px"></div>
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+  <script>
+  var map = L.map('map').setView([ 38.1254226603777, -121.5006950802305], 11);
+  var data_attrib = " | Data: <a href='http://www.geodatenzentrum.de/geodaten/gdz_rahmen.gdz_div?gdz_spr=eng&gdz_akt_zeile=5&gdz_anz_zeile=1&gdz_unt_zeile=18&gdz_user_id=0' target='_blank'>&copy; GeoBasis-DE / BKG 2013</a> | <a href='http://d3js.org/'>D3.js</a> | <a href='https://github.com/mbostock/topojson/wiki'>TopoJSON</a>"
+  var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: "Map: <a href='http://www.openstreetmap.org/'>&copy; OpenStreetMap </a>contributors" + data_attrib});
+  var stamen = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {attribution: "Map: <a href='http://maps.stamen.com/#toner/12/37.7706/-122.3782'>Stamen Design</a>" + data_attrib}).addTo(map);
+  var baseLayers = {"Stamen":stamen,"OpenStreetMap":osm};
+  L.control.layers(baseLayers).addTo(map);
+
+function projectPoint(x, y) {
+  var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+  this.stream.point(point.x, point.y);
+}
+
+var transform = d3.geo.transform({point: projectPoint})
+var path = d3.geo.path().projection(transform)
+var width = 960
+var height = 600
+
+function styleit(feature) {
+        return {
+          'className': 'myStyle'
+        };
+}
+
+  d3.json("smaller.topology.json", function(error, topology) {
+    var grids = topology.objects.grids;
+    var gridf = topojson.feature(topology, grids);
+    var bbox =  topology.bbox;
+
+    var myLayer = L.geoJson(gridf.features,{
+           style: styleit
+    }).addTo(map);
+
+  })
+
+  </script>
+ </body>
+</html>

@@ -41,14 +41,18 @@ function dom_string_lower(ds){
 
 
 
-fs.readFile("topology4326.json",function(e,data){
+fs.readFile("smaller.topology.json",function(e,data){
     var topology = JSON.parse(data)
+    console.log(Object.keys(topology))
+    console.log(Object.keys(topology.objects))
+    console.log(topology.arcs.length)
     var grids = topology.objects.grids;
     var gridf = topojson.feature(topology, grids)
 
     var bbox =  topology.bbox
-    var centerx = bbox[2] - bbox[0]
-    var centery = bbox[3] - bbox[1]
+    console.log(bbox)
+    var centerx = bbox[2] + (bbox[2] - bbox[0])/2
+    var centery = bbox[3] + (bbox[3] - bbox[1])/2
     console.log([centerx,centery])
     var projection = d3.geo.mercator()
                      .center([centerx,centery])
